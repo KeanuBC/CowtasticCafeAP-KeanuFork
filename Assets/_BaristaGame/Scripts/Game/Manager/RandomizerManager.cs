@@ -581,10 +581,16 @@ public class RandomizerManager : MonoBehaviour
     private void InitializeShopQueue()
     {
         ShopLocationQueue.Clear();
+        var apClient = ArchipelagoClient.Instance;
         for (int i = 1; i <= MaxShopLocations; i++)
         {
             // Name must match the apworld's shop_location_name() format.
-            ShopLocationQueue.Add($"Shop Slot #{i}");
+            string loc = $"Shop Slot #{i}";
+            // Skip slots already purchased (their location was already sent) so a
+            // reload/reconnect doesn't re-offer them. Mirrors the serve-count
+            // restore in OnSceneLoaded for ingredient checks.
+            if (apClient != null && apClient.IsLocationSent(loc)) continue;
+            ShopLocationQueue.Add(loc);
         }
     }
 

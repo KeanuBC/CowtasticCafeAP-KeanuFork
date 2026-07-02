@@ -618,6 +618,17 @@ public class ArchipelagoClient : MonoBehaviour
         return totalChecks;
     }
 
+    /// <summary>
+    /// True if the location has already been checked/sent (per the server's
+    /// checked_locations). Used to prune already-purchased shop slots from the
+    /// queue after a reconnect/reload — the shop parallel of GetConsecutiveServeSent.
+    /// </summary>
+    public bool IsLocationSent(string locationName)
+    {
+        long id = LocationNameToId(locationName);
+        return id >= 0 && _checkedLocations.Contains(id);
+    }
+
     public void ReplayTo(RandomizerManager rm)
     {
         rm.ApplySlotData(_sdDrinks, _sdChecks, _sdShop, _sdBasePrice, _sdPriceStep,
