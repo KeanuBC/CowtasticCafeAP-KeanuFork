@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using TMPro;
 using Unity.Burst;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// This script will be added to the Coffee-mashines and Milk/-other Bottles
@@ -185,6 +187,25 @@ public class FillingTool : MonoBehaviour
 
             SetUnlockedState(true);
         }
+    }
+
+    /// <summary>
+    /// Rando mode: ingredients come only from Archipelago, so a locked machine
+    /// should never offer to be bought. Strips the tap-to-buy "Buy?" confirmation
+    /// (disables every Button in the ToolLocked subtree — the opener and its
+    /// Yes/No) and blanks the price label to "--". Called by RandomizerManager
+    /// once the game scene is ready. Idempotent.
+    /// </summary>
+    public void DisablePurchaseUI()
+    {
+        if (ToolLocked == null) return;
+
+        foreach (Button btn in ToolLocked.GetComponentsInChildren<Button>(true))
+            btn.enabled = false;
+
+        foreach (TMP_Text label in ToolLocked.GetComponentsInChildren<TMP_Text>(true))
+            if (label.gameObject.name == "Price")
+                label.text = "--";
     }
 
     [BurstCompile]

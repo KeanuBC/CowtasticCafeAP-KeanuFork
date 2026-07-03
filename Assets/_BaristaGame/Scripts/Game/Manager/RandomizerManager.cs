@@ -193,6 +193,7 @@ public class RandomizerManager : MonoBehaviour
         AutoBuySecretCandy();
         ConvertShopButtons();
         DisableCosmeticShop();
+        DisableIngredientPurchaseUI();
 
         // With manual milk-rate control, start each run at the 1-step floor;
         // the pending items below (including any Milk Flow Increases) raise the
@@ -237,6 +238,16 @@ public class RandomizerManager : MonoBehaviour
         // over; received milk cosmetics will re-apply it.
         if (MilkTypeController.instance != null)
             MilkTypeController.instance.SetMilkByPresetAndSavePreference(0);
+    }
+
+    /// <summary>
+    /// Ingredients are unlocked only by received Archipelago items, so strip the
+    /// "Buy?" confirmation popup and price from every locked ingredient machine.
+    /// </summary>
+    private void DisableIngredientPurchaseUI()
+    {
+        foreach (var tool in FindObjectsOfType<FillingTool>(true))
+            tool.DisablePurchaseUI();
     }
 
     /// <summary>The "secret candy" (initial upgrade) now starts purchased for free.</summary>
