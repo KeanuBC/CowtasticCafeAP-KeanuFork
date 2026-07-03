@@ -3385,6 +3385,7 @@ MonoBehaviour:
   NewOrder: {fileID: 8300000, guid: c532d4829e72125429339b3627fa1a47, type: 3}
   MouseClick: {fileID: 8300000, guid: 286b9cae686161249975b86a25695edf, type: 3}
   MenuSelection: {fileID: 0}
+  FlusterMilk: {fileID: 8300000, guid: fd79839307ec43cbb17fc7020e9519fc, type: 3}
 --- !u!82 &416650935595172741
 AudioSource:
   m_ObjectHideFlags: 0

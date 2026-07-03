@@ -493,6 +493,8 @@ public class OrderManager : MonoBehaviour
         IncreaseOneWantedBreastMilkActiveCustomer();
         dialogeManager.SetFlusteredLevel(ActiveCustomer, CurrentFlusteredLevel, ActiveIngreedentPercentages);
         CustomerDialogAnimator.SetTrigger("Fluster");
+        // Audio cue: the customer just flustered and now wants breast milk.
+        SoundEffectManager.instance?.PlayFlusterMilkEffect();
     }
 
     public PossibileOrder GetPossibileOrderCombo(List<Fillings> UnlockedStartFillings)

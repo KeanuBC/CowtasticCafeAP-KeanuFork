@@ -48,7 +48,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 24100000, guid: 11f7b52be3a7a714b8f82e359cb32b86, type: 2}
   ShufflePlaylist: 1
-  MusicList: []
+  MusicList:
+  - name: Cafe Ambience
+    clip: {fileID: 8300000, guid: 07b5cf2024ba4075abc9fe277749982f, type: 3}
   audioMixerGroup: {fileID: -7222658124133101136, guid: 11f7b52be3a7a714b8f82e359cb32b86, type: 2}
   crossFadeTime: 4
   audioSourceA: {fileID: 1855549509255462613}

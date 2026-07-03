@@ -9,6 +9,7 @@ public class SoundEffectManager : MonoBehaviour
     public AudioClip NewOrder;
     public AudioClip MouseClick;
     public AudioClip MenuSelection;
+    public AudioClip FlusterMilk;
 
     public static SoundEffectManager instance;
 
@@ -40,6 +41,12 @@ public class SoundEffectManager : MonoBehaviour
     public void PlayNewOrderEffect()
     {
         PlaySoundOneShot(NewOrder);
+    }
+
+    /// <summary>Cue played when a customer flusters and starts wanting breast milk.</summary>
+    public void PlayFlusterMilkEffect()
+    {
+        PlaySoundOneShot(FlusterMilk);
     }
 
     public void PlayMenuSelection()
