@@ -89,9 +89,13 @@ restores serve counts from already-sent locations via `GetConsecutiveServeSent`
   `shop_locations`, `shop_base_price`, `shop_price_step`, `min_drink_quality`,
   `death_link`, `death_link_send_quality`, `death_link_penalty`,
   `censorship_mode`, `allow_milk_rate_adjustment`, and parallel
-  arrays `loc_names`/`loc_items`/`loc_local` describing every real location's
-  item (for shop labels + "sent"/"unlocked" barista messages). Parsed in
-  `ArchipelagoClient.HandleConnected` → `RandomizerManager.ApplySlotData`.
+  arrays `loc_names`/`loc_items`/`loc_local`/`loc_flags` describing every real
+  location's item (for shop labels + "sent"/"unlocked" barista messages).
+  `loc_flags` is the item's color category — `0` filler, `1` progression, `2`
+  useful, `3` trap (`world._classify`) — used to tint shop button text
+  (`RandomizerManager.GetShopItemColorForSlot` → `ButtonUpgrade.UpdateShopVisuals`;
+  purple/blue/green/red). Parsed in `ArchipelagoClient.HandleConnected` →
+  `RandomizerManager.ApplySlotData`.
 - **Censorship aliases (dual IDs).** `censorship_mode` (option) is a per-slot
   rename only — no logic/placement change. Because an AP data package has ONE
   name per ID (global to the game), censored names get their OWN stable IDs and

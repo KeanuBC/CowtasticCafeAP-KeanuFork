@@ -40,6 +40,7 @@ public class ArchipelagoClient : MonoBehaviour
     private List<string> _sdLocNames = new List<string>();
     private List<string> _sdLocItems = new List<string>();
     private List<long>   _sdLocLocal = new List<long>();
+    private List<long>   _sdLocFlags = new List<long>();
 
     // How many received items we've already applied, so a reconnect resync
     // doesn't re-apply (and double-count) items or re-announce them.
@@ -255,7 +256,7 @@ public class ArchipelagoClient : MonoBehaviour
             Randomizer.ApplySlotData(_sdDrinks, _sdChecks, _sdShop, _sdBasePrice, _sdPriceStep,
                                      _sdMinDrinkQuality, _sdDeathLink != 0, _sdDeathLinkSendQuality, _sdDeathLinkPenalty,
                                      _sdCensorship != 0, _sdAllowMilkRate != 0,
-                                     _sdLocNames, _sdLocItems, _sdLocLocal);
+                                     _sdLocNames, _sdLocItems, _sdLocLocal, _sdLocFlags);
             _slotDataPending = false;
         }
 
@@ -424,6 +425,7 @@ public class ArchipelagoClient : MonoBehaviour
         _sdLocNames = ExtractStringArray(msg, "loc_names");
         _sdLocItems = ExtractStringArray(msg, "loc_items");
         _sdLocLocal = ExtractLongArray(msg, "loc_local");
+        _sdLocFlags = ExtractLongArray(msg, "loc_flags");
         _slotDataPending = true;
         Debug.Log($"[AP] Slot data cached: drinks={_sdDrinks} checks={_sdChecks} shop={_sdShop} locs={_sdLocNames.Count}");
 
@@ -634,7 +636,7 @@ public class ArchipelagoClient : MonoBehaviour
         rm.ApplySlotData(_sdDrinks, _sdChecks, _sdShop, _sdBasePrice, _sdPriceStep,
                          _sdMinDrinkQuality, _sdDeathLink != 0, _sdDeathLinkSendQuality, _sdDeathLinkPenalty,
                          _sdCensorship != 0, _sdAllowMilkRate != 0,
-                         _sdLocNames, _sdLocItems, _sdLocLocal);
+                         _sdLocNames, _sdLocItems, _sdLocLocal, _sdLocFlags);
         foreach (string item in _allItems)
             rm.RequeueItem(item);
     }

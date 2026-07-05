@@ -30,9 +30,18 @@ public class RandomizerManager : MonoBehaviour
     public List<string> ShopLocationQueue = new List<string>();
     public int MaxShopLocations = 10;
 
-    // Per-location info from slot data: location name -> (item display, isLocal).
+    // Per-location info from slot data: location name -> (item display, isLocal,
+    // color category: 0 filler, 1 progression, 2 useful, 3 trap).
     private Dictionary<string, LocInfo> _locInfo = new Dictionary<string, LocInfo>();
-    private struct LocInfo { public string Item; public bool Local; }
+    private struct LocInfo { public string Item; public bool Local; public int Category; }
+
+    // Shop label colors keyed by item category (see LocInfo.Category). Chosen to
+    // stay legible on the cream-colored shop buttons.
+    private static readonly Color ShopColorFiller      = new Color(0.09f, 0.50f, 0.24f); // green
+    private static readonly Color ShopColorProgression = new Color(0.52f, 0.16f, 0.70f); // purple
+    private static readonly Color ShopColorUseful      = new Color(0.13f, 0.35f, 0.80f); // blue
+    private static readonly Color ShopColorTrap        = new Color(0.75f, 0.13f, 0.13f); // red
+    private static readonly Color ShopColorUnknown     = Color.black;
 
     // Barista announcement queue, paced so messages don't stomp each other.
     private Queue<string> _announceQueue = new Queue<string>();
@@ -561,7 +570,8 @@ public class RandomizerManager : MonoBehaviour
                               int shopBasePrice, int shopPriceStep,
                               int minDrinkQuality, bool deathLink, int deathLinkSendQuality, int deathLinkPenalty,
                               bool censorship, bool allowMilkRateAdjustment,
-                              List<string> locNames, List<string> locItems, List<long> locLocal)
+                              List<string> locNames, List<string> locItems, List<long> locLocal,
+                              List<long> locFlags)
     {
         DrinksPerCheck       = drinksPerCheck;
         NumberOfChecks       = checksPerIngredient;
@@ -581,7 +591,9 @@ public class RandomizerManager : MonoBehaviour
             for (int i = 0; i < locNames.Count && i < locItems.Count; i++)
             {
                 bool local = locLocal != null && i < locLocal.Count && locLocal[i] != 0;
-                _locInfo[locNames[i]] = new LocInfo { Item = locItems[i], Local = local };
+                // -1 = category unknown (e.g. a seed generated before loc_flags existed).
+                int category = locFlags != null && i < locFlags.Count ? (int)locFlags[i] : -1;
+                _locInfo[locNames[i]] = new LocInfo { Item = locItems[i], Local = local, Category = category };
             }
         }
 
@@ -627,6 +639,26 @@ public class RandomizerManager : MonoBehaviour
         string loc = ShopLocationQueue[shopSlotIndex]; // "Shop Slot #m"
         if (_locInfo.TryGetValue(loc, out LocInfo info)) return info.Item;
         return "?";
+    }
+
+    /// <summary>
+    /// Color for the shop button label at the given visible slot index, keyed by
+    /// the item's classification: purple progression, blue useful, green filler,
+    /// red trap. Falls back to black when the slot data lacks a category.
+    /// </summary>
+    public Color GetShopItemColorForSlot(int shopSlotIndex)
+    {
+        if (shopSlotIndex < 0 || shopSlotIndex >= ShopLocationQueue.Count) return ShopColorUnknown;
+        string loc = ShopLocationQueue[shopSlotIndex]; // "Shop Slot #m"
+        if (!_locInfo.TryGetValue(loc, out LocInfo info)) return ShopColorUnknown;
+        switch (info.Category)
+        {
+            case 0:  return ShopColorFiller;
+            case 1:  return ShopColorProgression;
+            case 2:  return ShopColorUseful;
+            case 3:  return ShopColorTrap;
+            default: return ShopColorUnknown; // -1 or unexpected
+        }
     }
 
     /// <summary>Fixed price of a given "Shop Slot #N" (per-slot, not per-purchase).</summary>

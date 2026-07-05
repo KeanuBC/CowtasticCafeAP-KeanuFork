@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from BaseClasses import ItemClassification
 from worlds.AutoWorld import World
 
 from .items import ITEM_NAME_TO_ID, CowtasticItem, create_all_items, create_item
@@ -41,7 +42,7 @@ class CowtasticWorld(World):
 
     def fill_slot_data(self) -> dict:
         """Export settings the Unity client needs to match location checks."""
-        loc_names, loc_items, loc_local = self._location_item_map()
+        loc_names, loc_items, loc_local, loc_flags = self._location_item_map()
         return {
             "drinks_per_check":      self.options.drinks_per_check.value,
             "checks_per_ingredient": self.options.checks_per_ingredient.value,
@@ -60,10 +61,26 @@ class CowtasticWorld(World):
             "loc_names":  loc_names,
             "loc_items":  loc_items,
             "loc_local":  loc_local,   # 1 = item is this player's, 0 = remote
+            "loc_flags":  loc_flags,   # item category: 0 filler, 1 progression,
+                                       # 2 useful, 3 trap (drives shop text color)
         }
 
+    @staticmethod
+    def _classify(item) -> int:
+        """Map an item's classification to the client's color category:
+        1 progression, 2 useful, 3 trap, 0 filler. Progression wins over the
+        others; traps never carry the progression bit."""
+        c = item.classification
+        if c & ItemClassification.progression:
+            return 1
+        if c & ItemClassification.trap:
+            return 3
+        if c & ItemClassification.useful:
+            return 2
+        return 0
+
     def _location_item_map(self):
-        names, items, local = [], [], []
+        names, items, local, flags = [], [], [], []
         for loc in self.multiworld.get_locations(self.player):
             if loc.address is None:
                 continue  # skip events (e.g. the Victory location)
@@ -72,11 +89,14 @@ class CowtasticWorld(World):
             if item is None:
                 items.append("???")
                 local.append(0)
+                flags.append(0)
             elif item.player == self.player:
                 items.append(item.name)
                 local.append(1)
+                flags.append(self._classify(item))
             else:
                 owner = self.multiworld.get_player_name(item.player)
                 items.append(f"{item.name} ({owner})")
                 local.append(0)
-        return names, items, local
+                flags.append(self._classify(item))
+        return names, items, local, flags

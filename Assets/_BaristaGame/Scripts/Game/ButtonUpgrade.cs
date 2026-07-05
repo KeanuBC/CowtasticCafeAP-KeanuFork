@@ -254,13 +254,22 @@ public class ButtonUpgrade : MonoBehaviour
         {
             button.interactable = false;
             if (MoneyText != null) MoneyText.text = Statics.ButtonMaxUpgrades;
-            if (shopLabel != null) shopLabel.text = "Sold Out";
+            if (shopLabel != null)
+            {
+                shopLabel.text  = "Sold Out";
+                shopLabel.color = Color.gray;
+            }
             return;
         }
 
-        // Label the button with what this slot will hand out. Set every frame
+        // Label the button with what this slot will hand out, colored by the
+        // item's classification (progression/useful/filler/trap). Set every frame
         // so it stays correct as the queue advances after each purchase.
-        if (shopLabel != null) shopLabel.text = rm.GetShopItemDisplayForSlot(ShopSlotIndex);
+        if (shopLabel != null)
+        {
+            shopLabel.text  = rm.GetShopItemDisplayForSlot(ShopSlotIndex);
+            shopLabel.color = rm.GetShopItemColorForSlot(ShopSlotIndex);
+        }
         for (int i = 0; i < shopBlankTexts.Count; i++)
             if (shopBlankTexts[i] != null) shopBlankTexts[i].text = "";
 
