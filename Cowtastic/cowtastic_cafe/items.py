@@ -189,6 +189,15 @@ ITEM_CLASSIFICATIONS: dict[str, ItemClassification] = {
     **{CENSORED_COSMETIC[cos]: ItemClassification.filler for cos in COSMETICS},
 }
 
+# Item name groups let players hint a whole category at once — e.g.
+# "!hint Ingredients". Covers every unlockable ingredient's item. (Breast Milk
+# has no unlock item; Milk & Coffee start precollected but are still ingredients,
+# so they're kept for a complete category — hinting an already-owned item is a
+# harmless no-op.)
+ITEM_NAME_GROUPS: dict[str, set[str]] = {
+    "Ingredients": {f"Ingredient: {display_name(ing)}" for ing in INGREDIENTS},
+}
+
 
 class CowtasticItem(Item):
     game = "Cowtastic Cafe"

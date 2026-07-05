@@ -3,7 +3,7 @@ from __future__ import annotations
 from BaseClasses import ItemClassification
 from worlds.AutoWorld import World
 
-from .items import ITEM_NAME_TO_ID, CowtasticItem, create_all_items, create_item
+from .items import ITEM_NAME_GROUPS, ITEM_NAME_TO_ID, CowtasticItem, create_all_items, create_item
 from .locations import LOCATION_NAME_TO_ID, create_all_locations
 from .options import CowtasticOptions
 from .regions import create_regions
@@ -20,6 +20,9 @@ class CowtasticWorld(World):
 
     item_name_to_id = ITEM_NAME_TO_ID
     location_name_to_id = LOCATION_NAME_TO_ID
+
+    # Lets players hint the whole ingredient category at once ("!hint Ingredients").
+    item_name_groups = ITEM_NAME_GROUPS
 
     # Players start in the Menu region.
     origin_region_name = "Menu"
