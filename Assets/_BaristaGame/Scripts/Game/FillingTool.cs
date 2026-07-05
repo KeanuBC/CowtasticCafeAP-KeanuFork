@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using TMPro;
 using Unity.Burst;
 using UnityEngine;
 using UnityEngine.UI;
@@ -193,8 +192,8 @@ public class FillingTool : MonoBehaviour
     /// Rando mode: ingredients come only from Archipelago, so a locked machine
     /// should never offer to be bought. Strips the tap-to-buy "Buy?" confirmation
     /// (disables every Button in the ToolLocked subtree — the opener and its
-    /// Yes/No) and blanks the price label to "--". Called by RandomizerManager
-    /// once the game scene is ready. Idempotent.
+    /// Yes/No), removes the "buy X for ..." hover tooltip, and hides the price
+    /// tag. Called by RandomizerManager once the game scene is ready. Idempotent.
     /// </summary>
     public void DisablePurchaseUI()
     {
@@ -203,9 +202,16 @@ public class FillingTool : MonoBehaviour
         foreach (Button btn in ToolLocked.GetComponentsInChildren<Button>(true))
             btn.enabled = false;
 
-        foreach (TMP_Text label in ToolLocked.GetComponentsInChildren<TMP_Text>(true))
-            if (label.gameObject.name == "Price")
-                label.text = "--";
+        // Remove the "buy X for ..." hover tooltip on locked machines.
+        foreach (TooltipTrigger tip in ToolLocked.GetComponentsInChildren<TooltipTrigger>(true))
+            tip.enabled = false;
+
+        // Hide the price tag outright. "Tag" (the tag sprite plus its price
+        // number) is a separate child of the shadowed locked image, not baked
+        // into it, so switching it off removes both.
+        Transform tag = ToolLocked.transform.Find("Tag");
+        if (tag != null)
+            tag.gameObject.SetActive(false);
     }
 
     [BurstCompile]
