@@ -88,9 +88,13 @@ restores serve counts from already-sent locations via `GetConsecutiveServeSent`
 - **Slot data** (`fill_slot_data`): `drinks_per_check`, `checks_per_ingredient`,
   `shop_locations`, `shop_base_price`, `shop_price_step`, `min_drink_quality`,
   `death_link`, `death_link_send_quality`, `death_link_penalty`,
-  `censorship_mode`, `allow_milk_rate_adjustment`, and parallel
+  `censorship_mode`, `allow_milk_rate_adjustment`, `scout_shop`, and parallel
   arrays `loc_names`/`loc_items`/`loc_local`/`loc_flags` describing every real
   location's item (for shop labels + "sent"/"unlocked" barista messages).
+  `scout_shop` (`0` none / `1` visible / `2` all, default visible) makes the
+  client send free `LocationScouts` hints (`create_as_hint=1`) for shop slots —
+  the on-screen ones or the whole list (`RandomizerManager.ScoutShopLocations` →
+  `ArchipelagoClient.ScoutLocationsByName`).
   `loc_flags` is the item's color category — `0` filler, `1` progression, `2`
   useful, `3` trap (`world._classify`) — used to tint shop button text
   (`RandomizerManager.GetShopItemColorForSlot` → `ButtonUpgrade.UpdateShopVisuals`;

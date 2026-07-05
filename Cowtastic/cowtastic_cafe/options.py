@@ -129,6 +129,24 @@ class ShopPriceStep(Range):
     default = 25
 
 
+class ScoutShop(Choice):
+    """Automatically create scout hints for the randomizer shop's contents, so
+    you (and the item owners) can see what each shop slot will hand out without
+    spending hint points.
+      - none:    no shop scouting.
+      - visible: hint only the shop slots currently on display (the cheapest
+                 unpurchased ones); as you buy and new slots surface, they're
+                 hinted too.
+      - all:     hint every shop slot up front.
+    Purely a client-side hint convenience; no effect on generation, logic, or
+    item placement."""
+    display_name = "Scout Shop"
+    option_none    = 0
+    option_visible = 1
+    option_all     = 2
+    default = 1  # visible
+
+
 class AllowMilkRateAdjustment(Toggle):
     """Let the player manually control the milk production rate. When on, the two
     left-hand shop buttons return to being milk-rate up/down controls (free to
@@ -156,3 +174,4 @@ class CowtasticOptions(PerGameCommonOptions):
     death_link_penalty: DeathLinkPenalty
     censorship_mode: CensorshipMode
     allow_milk_rate_adjustment: AllowMilkRateAdjustment
+    scout_shop: ScoutShop

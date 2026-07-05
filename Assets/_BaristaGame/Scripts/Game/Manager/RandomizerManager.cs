@@ -30,6 +30,15 @@ public class RandomizerManager : MonoBehaviour
     public List<string> ShopLocationQueue = new List<string>();
     public int MaxShopLocations = 10;
 
+    // Shop scouting (scout_shop option): 0 none, 1 visible, 2 all. When enabled,
+    // the client sends free scout hints for shop slots so their contents show up
+    // without spending hint points. _visibleShopSlots is how many shop buttons
+    // are on screen; _scoutedShopLocs dedupes so we don't re-scout.
+    public int ScoutShopMode = 1;
+    private int _visibleShopSlots = 0;
+    private bool _slotDataApplied = false;
+    private HashSet<string> _scoutedShopLocs = new HashSet<string>();
+
     // Per-location info from slot data: location name -> (item display, isLocal,
     // color category: 0 filler, 1 progression, 2 useful, 3 trap).
     private Dictionary<string, LocInfo> _locInfo = new Dictionary<string, LocInfo>();
@@ -315,7 +324,47 @@ public class RandomizerManager : MonoBehaviour
             // and captures the label TMP so we can populate it ourselves.
             shopButtons[i].ConfigureAsShopSlot(i);
         }
+        _visibleShopSlots = shopButtons.Count;
         AddRecentEvent($"Converted {shopButtons.Count} shop buttons");
+
+        // Now that we know how many slots are on screen, fire off shop scout hints.
+        ScoutShopLocations();
+    }
+
+    /// <summary>
+    /// Sends free scout hints for shop slots per the scout_shop option:
+    /// 1 (visible) hints the on-screen slots, 2 (all) hints every shop slot,
+    /// 0 (none) does nothing. Deduped so already-hinted slots aren't re-sent;
+    /// call again after the visible set changes (e.g. after a purchase).
+    /// </summary>
+    private void ScoutShopLocations()
+    {
+        if (!_slotDataApplied || ScoutShopMode <= 0) return;
+        var client = ArchipelagoClient.Instance;
+        if (client == null || !client.IsConnected) return;
+
+        var toScout = new List<string>();
+        if (ScoutShopMode >= 2)
+        {
+            // All: every shop slot, whether or not it's currently on screen.
+            for (int n = 1; n <= MaxShopLocations; n++)
+                AddToScout($"Shop Slot #{n}", toScout);
+        }
+        else
+        {
+            // Visible: the cheapest unbought slots currently shown on the buttons.
+            for (int i = 0; i < _visibleShopSlots && i < ShopLocationQueue.Count; i++)
+                AddToScout(ShopLocationQueue[i], toScout);
+        }
+
+        if (toScout.Count > 0)
+            client.ScoutLocationsByName(toScout);
+    }
+
+    private void AddToScout(string locationName, List<string> toScout)
+    {
+        if (_scoutedShopLocs.Add(locationName))
+            toScout.Add(locationName);
     }
 
     public void HandleLocation(string locationName)
@@ -569,7 +618,7 @@ public class RandomizerManager : MonoBehaviour
     public void ApplySlotData(int drinksPerCheck, int checksPerIngredient, int shopLocations,
                               int shopBasePrice, int shopPriceStep,
                               int minDrinkQuality, bool deathLink, int deathLinkSendQuality, int deathLinkPenalty,
-                              bool censorship, bool allowMilkRateAdjustment,
+                              bool censorship, bool allowMilkRateAdjustment, int scoutShop,
                               List<string> locNames, List<string> locItems, List<long> locLocal,
                               List<long> locFlags)
     {
@@ -584,6 +633,7 @@ public class RandomizerManager : MonoBehaviour
         DeathLinkPenalty     = deathLinkPenalty;
         Censorship           = censorship;
         AllowMilkRateAdjustment = allowMilkRateAdjustment;
+        ScoutShopMode        = scoutShop;
 
         _locInfo.Clear();
         if (locNames != null && locItems != null)
@@ -598,7 +648,13 @@ public class RandomizerManager : MonoBehaviour
         }
 
         InitializeShopQueue();
+        _slotDataApplied = true;
         Debug.Log($"[AP] Slot data applied: {drinksPerCheck} drinks/check, {checksPerIngredient} checks/ingredient, {shopLocations} shop locations, {_locInfo.Count} location items");
+
+        // "all" mode can hint the whole shop now; "visible" mode also fires from
+        // ConvertShopButtons once the on-screen slot count is known. Deduped, so
+        // whichever runs first wins and the other is a no-op.
+        ScoutShopLocations();
     }
 
     private void InitializeShopQueue()
@@ -682,6 +738,8 @@ public class RandomizerManager : MonoBehaviour
         {
             ShopLocationQueue.Remove(locationId);
             HandleLocation(locationId);
+            // A slot just advanced into view; hint it too (visible mode).
+            ScoutShopLocations();
         }
     }
 

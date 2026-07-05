@@ -37,6 +37,7 @@ public class ArchipelagoClient : MonoBehaviour
     private int          _sdMinDrinkQuality = 2, _sdDeathLink = 0, _sdDeathLinkSendQuality = 3, _sdDeathLinkPenalty = 20;
     private int          _sdCensorship = 0;
     private int          _sdAllowMilkRate = 0;
+    private int          _sdScoutShop = 1; // 0 none, 1 visible, 2 all
     private List<string> _sdLocNames = new List<string>();
     private List<string> _sdLocItems = new List<string>();
     private List<long>   _sdLocLocal = new List<long>();
@@ -255,7 +256,7 @@ public class ArchipelagoClient : MonoBehaviour
         {
             Randomizer.ApplySlotData(_sdDrinks, _sdChecks, _sdShop, _sdBasePrice, _sdPriceStep,
                                      _sdMinDrinkQuality, _sdDeathLink != 0, _sdDeathLinkSendQuality, _sdDeathLinkPenalty,
-                                     _sdCensorship != 0, _sdAllowMilkRate != 0,
+                                     _sdCensorship != 0, _sdAllowMilkRate != 0, _sdScoutShop,
                                      _sdLocNames, _sdLocItems, _sdLocLocal, _sdLocFlags);
             _slotDataPending = false;
         }
@@ -348,6 +349,29 @@ public class ArchipelagoClient : MonoBehaviour
         await _apNetworking.SendMessageAsync(packet);
     }
 
+    /// <summary>
+    /// Sends a LocationScouts for the given location names with create_as_hint=1,
+    /// which makes the server create (and broadcast) free hints for those
+    /// locations. Used by the shop-scout feature. Unknown names are skipped.
+    /// </summary>
+    public async void ScoutLocationsByName(List<string> locationNames)
+    {
+        if (!IsConnected || _apNetworking == null || locationNames == null) return;
+
+        var ids = new List<long>();
+        foreach (string name in locationNames)
+        {
+            long id = LocationNameToId(name);
+            if (id >= 0) ids.Add(id);
+        }
+        if (ids.Count == 0) return;
+
+        string idList = string.Join(",", ids);
+        Debug.Log($"[AP] LocationScouts (hint) → {idList}");
+        string packet = $"[{{\"cmd\":\"LocationScouts\",\"locations\":[{idList}],\"create_as_hint\":1}}]";
+        await _apNetworking.SendMessageAsync(packet);
+    }
+
     // ---------------------------------------------------------------------------
     // Receiving
     // ---------------------------------------------------------------------------
@@ -418,6 +442,7 @@ public class ArchipelagoClient : MonoBehaviour
         _sdDeathLinkPenalty     = ExtractInt(msg, "death_link_penalty",       20);
         _sdCensorship           = ExtractInt(msg, "censorship_mode",          0);
         _sdAllowMilkRate        = ExtractInt(msg, "allow_milk_rate_adjustment", 0);
+        _sdScoutShop            = ExtractInt(msg, "scout_shop",               1);
 
         // If DeathLink is enabled, update our tags so the server routes bounces to us.
         if (_sdDeathLink != 0)
@@ -635,7 +660,7 @@ public class ArchipelagoClient : MonoBehaviour
     {
         rm.ApplySlotData(_sdDrinks, _sdChecks, _sdShop, _sdBasePrice, _sdPriceStep,
                          _sdMinDrinkQuality, _sdDeathLink != 0, _sdDeathLinkSendQuality, _sdDeathLinkPenalty,
-                         _sdCensorship != 0, _sdAllowMilkRate != 0,
+                         _sdCensorship != 0, _sdAllowMilkRate != 0, _sdScoutShop,
                          _sdLocNames, _sdLocItems, _sdLocLocal, _sdLocFlags);
         foreach (string item in _allItems)
             rm.RequeueItem(item);
