@@ -1,5 +1,7 @@
 from dataclasses import dataclass
-from Options import Range, Choice, Toggle, DeathLink, PerGameCommonOptions
+from Options import Range, Choice, Toggle, OptionSet, DeathLink, PerGameCommonOptions
+
+from .items import PURCHASABLE_INGREDIENT_DISPLAY, LIQUID_INGREDIENTS, STARTING_INGREDIENTS_DEFAULT
 
 
 class CensorshipMode(Toggle):
@@ -12,6 +14,19 @@ class CensorshipMode(Toggle):
     Per-slot: only your slot's names are censored in the spoiler/trackers; other
     players' Cowtastic slots are unaffected by your setting."""
     display_name = "Censorship Mode"
+
+
+class StartingIngredients(OptionSet):
+    """Which ingredients you begin the run with already unlocked (precollected).
+    Valid values are the purchasable ingredients: Espresso, Coffee, Chocolate,
+    Tea, Milk, Cream, Sugar, Ice, Boba, Sprinkles, Whipped Cream, Caramel Sauce,
+    Cocoa Powder. (Breast Milk is always available and cannot be listed here.)
+    At least one 'liquid' ingredient (Milk, Coffee, Espresso, Sugar, Cream, Tea,
+    or Chocolate) MUST be included or generation fails — without a liquid you
+    can't make any drink at all. Defaults to Milk + Coffee."""
+    display_name = "Starting Ingredients"
+    valid_keys = frozenset(PURCHASABLE_INGREDIENT_DISPLAY)
+    default = frozenset(STARTING_INGREDIENTS_DEFAULT)
 
 
 class DrinksPerCheck(Range):
@@ -161,6 +176,7 @@ class AllowMilkRateAdjustment(Toggle):
 
 @dataclass
 class CowtasticOptions(PerGameCommonOptions):
+    starting_ingredients: StartingIngredients
     drinks_per_check: DrinksPerCheck
     checks_per_ingredient: ChecksPerIngredient
     shop_locations: ShopLocations

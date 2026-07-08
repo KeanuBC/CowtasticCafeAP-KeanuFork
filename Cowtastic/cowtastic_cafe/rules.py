@@ -2,7 +2,7 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING
 
-from .items import INGREDIENTS, REQUIRED_CANDY, STARTING_INGREDIENTS, display_name
+from .items import INGREDIENTS, REQUIRED_CANDY, starting_ingredients, display_name
 from .locations import location_name, shop_location_name, censored_serve_name
 
 if TYPE_CHECKING:
@@ -17,9 +17,10 @@ def set_all_rules(world: CowtasticWorld) -> None:
 
 def set_location_rules(world: CowtasticWorld) -> None:
     checks = world.options.checks_per_ingredient.value
+    starting = starting_ingredients(world)
 
     for ing in INGREDIENTS:
-        if ing in STARTING_INGREDIENTS:
+        if ing in starting:
             continue  # Always reachable — no unlock needed.
         item_name = f"Ingredient: {display_name(ing)}"
         for c in range(checks):
@@ -50,8 +51,8 @@ def _ingredient_count(state, world: CowtasticWorld) -> int:
 
 def set_shop_rules(world: CowtasticWorld) -> None:
     # Gating is purely slot-position-based so it stays stable regardless of the
-    # player's chosen base/step prices. The 2 starting ingredients (Milk, Coffee)
-    # cover the first 3 slots; each additional pair of slots needs 1 more ingredient.
+    # player's chosen base/step prices. The first 3 slots need 2 ingredients;
+    # each additional pair of slots needs 1 more ingredient.
     # Formula: required = max(2, ceil((slot + 1) / 2))
     #   slot 1 → 2, slot 2 → 2, slot 3 → 2, slot 4 → 3, slot 5 → 3, slot 6 → 4 …
     for n in range(world.options.shop_locations.value):

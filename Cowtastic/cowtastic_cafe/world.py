@@ -1,9 +1,13 @@
 from __future__ import annotations
 
 from BaseClasses import ItemClassification
+from Options import OptionError
 from worlds.AutoWorld import World
 
-from .items import ITEM_NAME_GROUPS, ITEM_NAME_TO_ID, CowtasticItem, create_all_items, create_item
+from .items import (
+    ITEM_NAME_GROUPS, ITEM_NAME_TO_ID, LIQUID_INGREDIENTS, CowtasticItem,
+    create_all_items, create_item, starting_ingredients,
+)
 from .locations import LOCATION_NAME_TO_ID, create_all_locations
 from .options import CowtasticOptions
 from .regions import create_regions
@@ -26,6 +30,16 @@ class CowtasticWorld(World):
 
     # Players start in the Menu region.
     origin_region_name = "Menu"
+
+    def generate_early(self) -> None:
+        # A drink needs at least one liquid ingredient, so the starting set must
+        # contain one or the run is unwinnable (no drink can ever be made).
+        if not (starting_ingredients(self) & LIQUID_INGREDIENTS):
+            raise OptionError(
+                f"Cowtastic Cafe ({self.player_name}): starting_ingredients must "
+                f"include at least one liquid ingredient "
+                f"({', '.join(sorted(LIQUID_INGREDIENTS))})."
+            )
 
     def create_regions(self) -> None:
         create_regions(self)

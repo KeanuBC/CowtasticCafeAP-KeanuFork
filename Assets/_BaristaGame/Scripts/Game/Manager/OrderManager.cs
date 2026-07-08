@@ -1925,7 +1925,7 @@ public class OrderManager : MonoBehaviour
             {
                 int dlIndex = System.Array.IndexOf(Ratings, ratingClass);
                 if (dlIndex >= 0 && dlIndex >= RandomizerManager.Instance.DeathLinkSendQuality)
-                    RandomizerManager.Instance.SendDeathLink($"A {ratingClass.Name} drink from the cafe");
+                    RandomizerManager.Instance.SendDeathLink($"The barista served a {ratingClass.Name} drink, and the customer stormed out.");
             }
 
             if (ratingClass != null && ratingClass.isFail == false) //rating > 0.1f ||

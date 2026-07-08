@@ -41,9 +41,30 @@ def display_name(token: str) -> str:
     return INGREDIENT_DISPLAY.get(token, token)
 
 
-# These ingredients are unlocked from the start in the base game.
-# Their serve locations are still in logic immediately; no unlock item is placed.
-STARTING_INGREDIENTS = {"Milk", "Coffee"}
+# The purchasable (unlockable) ingredients, as AP display names — the valid
+# choices for the starting_ingredients option. Breast Milk is excluded (it is
+# always available and has no unlock item).
+PURCHASABLE_INGREDIENT_DISPLAY = [display_name(tok) for tok in INGREDIENTS]
+
+# Casefolded display name -> game enum token, for turning the AP-facing option
+# values back into tokens. Casefolded because OptionSet verifies keys
+# case-insensitively but preserves the user's original casing in .value.
+_DISPLAY_TO_TOKEN_CF = {display_name(tok).casefold(): tok for tok in INGREDIENTS}
+
+# "Liquid" ingredient tokens: a drink needs at least one of these, so a starting
+# set with none of them can't make any drink and fails generation.
+LIQUID_INGREDIENTS = {"Milk", "Coffee", "Espresso", "Sugar", "Cream", "Tea", "Chocolate"}
+
+# Default starting ingredients (unlocked/precollected from the start; their serve
+# locations are in logic immediately and no unlock item is placed). Configurable
+# via the starting_ingredients option.
+STARTING_INGREDIENTS_DEFAULT = {"Milk", "Coffee"}
+
+
+def starting_ingredients(world: CowtasticWorld) -> set[str]:
+    """The player's starting ingredients as game enum tokens (from the option)."""
+    return {_DISPLAY_TO_TOKEN_CF[name.casefold()]
+            for name in world.options.starting_ingredients.value}
 
 # Stretchy Candy = milk-capacity upgrade. The goal is the in-game "barista
 # overflows" good end, which fires when the barista's max size reaches the
@@ -211,12 +232,13 @@ def create_all_items(world: CowtasticWorld) -> None:
     pool: list[CowtasticItem] = []
 
     # Starting ingredients are precollected — their locations are immediately in logic.
-    for ing in STARTING_INGREDIENTS:
+    starting = starting_ingredients(world)
+    for ing in starting:
         world.multiworld.push_precollected(create_item(world, f"Ingredient: {display_name(ing)}"))
 
     # Remaining ingredients are randomized progression items.
     for ing in INGREDIENTS:
-        if ing not in STARTING_INGREDIENTS:
+        if ing not in starting:
             pool.append(create_item(world, f"Ingredient: {display_name(ing)}"))
 
     # Milk capacity upgrades (progression): the required amount plus any extras.

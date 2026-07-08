@@ -72,11 +72,14 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 .aider*
 
-# Build output
+# Build output (one folder per platform)
 Output/
+Output-Linux/
+Output-Mac/
 
 # Generated release artifacts (run build_release.ps1 to regenerate)
 release/
+Output_AP/
 
 # Generated apworld bundle (regenerate from Cowtastic/cowtastic_cafe/)
 *.apworld
