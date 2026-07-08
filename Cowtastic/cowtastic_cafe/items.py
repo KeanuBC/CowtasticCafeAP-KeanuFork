@@ -51,9 +51,15 @@ PURCHASABLE_INGREDIENT_DISPLAY = [display_name(tok) for tok in INGREDIENTS]
 # case-insensitively but preserves the user's original casing in .value.
 _DISPLAY_TO_TOKEN_CF = {display_name(tok).casefold(): tok for tok in INGREDIENTS}
 
-# "Liquid" ingredient tokens: a drink needs at least one of these, so a starting
-# set with none of them can't make any drink and fails generation.
-LIQUID_INGREDIENTS = {"Milk", "Coffee", "Espresso", "Sugar", "Cream", "Tea", "Chocolate"}
+# Ingredients that can be the BASE of a drink (an order's StartFilling). A
+# playable start needs at least one of these or no order can be fulfilled, so
+# generation fails without one. Verified against the Arcade order set
+# (Assets/.../PossibileOrders/PossibileOrder_1..6, referenced by
+# "GameManager Arcade.prefab"): the six order bases are Espresso, Coffee,
+# Chocolate, Tea, Milk, and Cream. Sugar is only ever an *additive* (never a
+# StartFilling) in Arcade, so it is NOT a valid solo starting ingredient.
+# (Chaos mode does have a Sugar-based order, but the rando always runs Arcade.)
+BASE_INGREDIENTS = {"Espresso", "Coffee", "Chocolate", "Tea", "Milk", "Cream"}
 
 # Default starting ingredients (unlocked/precollected from the start; their serve
 # locations are in logic immediately and no unlock item is placed). Configurable

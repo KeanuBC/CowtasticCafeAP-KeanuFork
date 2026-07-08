@@ -5,7 +5,7 @@ from Options import OptionError
 from worlds.AutoWorld import World
 
 from .items import (
-    ITEM_NAME_GROUPS, ITEM_NAME_TO_ID, LIQUID_INGREDIENTS, CowtasticItem,
+    ITEM_NAME_GROUPS, ITEM_NAME_TO_ID, BASE_INGREDIENTS, CowtasticItem,
     create_all_items, create_item, starting_ingredients,
 )
 from .locations import LOCATION_NAME_TO_ID, create_all_locations
@@ -32,13 +32,14 @@ class CowtasticWorld(World):
     origin_region_name = "Menu"
 
     def generate_early(self) -> None:
-        # A drink needs at least one liquid ingredient, so the starting set must
-        # contain one or the run is unwinnable (no drink can ever be made).
-        if not (starting_ingredients(self) & LIQUID_INGREDIENTS):
+        # Every order is built on a base ingredient (its StartFilling), so the
+        # starting set must include at least one base ingredient or no order can
+        # ever be fulfilled and the run is unwinnable.
+        if not (starting_ingredients(self) & BASE_INGREDIENTS):
             raise OptionError(
                 f"Cowtastic Cafe ({self.player_name}): starting_ingredients must "
-                f"include at least one liquid ingredient "
-                f"({', '.join(sorted(LIQUID_INGREDIENTS))})."
+                f"include at least one base ingredient — one a drink can be built "
+                f"on ({', '.join(sorted(BASE_INGREDIENTS))})."
             )
 
     def create_regions(self) -> None:

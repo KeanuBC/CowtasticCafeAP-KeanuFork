@@ -211,6 +211,7 @@ public class RandomizerManager : MonoBehaviour
         AutoBuySecretCandy();
         ConvertShopButtons();
         DisableCosmeticShop();
+        LockAllIngredients();
         DisableIngredientPurchaseUI();
 
         // With manual milk-rate control, start each run at the 1-step floor;
@@ -256,6 +257,21 @@ public class RandomizerManager : MonoBehaviour
         // over; received milk cosmetics will re-apply it.
         if (MilkTypeController.instance != null)
             MilkTypeController.instance.SetMilkByPresetAndSavePreference(0);
+    }
+
+    /// <summary>
+    /// In the base game some machines (Milk, Coffee) start already unlocked
+    /// because they were never gated. For the rando EVERY ingredient must come
+    /// from Archipelago — including the starting ones, which arrive as
+    /// precollected items on connect — so force every machine locked here. The
+    /// pending-item flush at the end of TryActivateGame then re-unlocks exactly
+    /// the ingredients this slot has actually received (the configured starting
+    /// set plus anything found so far).
+    /// </summary>
+    private void LockAllIngredients()
+    {
+        foreach (var tool in FindObjectsOfType<FillingTool>(true))
+            tool.SetUnlockedState(false);
     }
 
     /// <summary>
