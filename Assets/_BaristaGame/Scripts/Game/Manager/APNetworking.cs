@@ -41,26 +41,55 @@ public class APNetworking : MonoBehaviour
 
         try
         {
-            _webSocket = new ClientWebSocket();
-            _cancellationTokenSource = new CancellationTokenSource();
+            // If the caller gave an explicit scheme, honour it exactly (one attempt).
+            // Otherwise try wss:// first (archipelago.gg and other TLS hosts), then
+            // fall back to ws:// — many self-hosted servers serve a plain WebSocket
+            // on the game port even though their website is HTTPS. This mirrors what
+            // the official Archipelago clients do.
+            bool hasScheme = serverUrl.StartsWith("ws://") || serverUrl.StartsWith("wss://");
+            string host = (hasScheme ? serverUrl.Substring(serverUrl.IndexOf("://") + 3) : serverUrl)
+                          .Split(':')[0];
+            bool isLocal = host == "localhost" || host == "127.0.0.1" || host == "0.0.0.0";
 
-            // Public servers (e.g. archipelago.gg) require WSS; use plain WS only for localhost.
-            if (!serverUrl.StartsWith("ws://") && !serverUrl.StartsWith("wss://"))
+            string[] candidates;
+            if (hasScheme)
+                candidates = new[] { serverUrl };
+            else if (isLocal)
+                candidates = new[] { "ws://" + serverUrl };            // localhost: plain ws only
+            else
+                candidates = new[] { "wss://" + serverUrl, "ws://" + serverUrl }; // try TLS, then plain
+
+            Exception lastError = null;
+            for (int i = 0; i < candidates.Length; i++)
             {
-                string host = serverUrl.Split(':')[0];
-                bool isLocal = host == "localhost" || host == "127.0.0.1" || host == "0.0.0.0";
-                serverUrl = (isLocal ? "ws://" : "wss://") + serverUrl;
+                string url = candidates[i];
+                try
+                {
+                    _webSocket = new ClientWebSocket();
+                    _cancellationTokenSource = new CancellationTokenSource();
+
+                    await _webSocket.ConnectAsync(new Uri(url), _cancellationTokenSource.Token);
+
+                    Debug.Log($"[AP Network] Connected to Archipelago server ({url})");
+                    _isConnecting = false;
+
+                    // Start receiving messages
+                    _receiveTask = ReceiveMessagesAsync();
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    lastError = e;
+                    _webSocket?.Dispose();
+                    _webSocket = null;
+                    if (i + 1 < candidates.Length)
+                        Debug.LogWarning($"[AP Network] {url} failed ({e.Message}); trying fallback…");
+                }
             }
 
-            Uri serverUri = new Uri(serverUrl);
-            await _webSocket.ConnectAsync(serverUri, _cancellationTokenSource.Token);
-
-            Debug.Log("[AP Network] Connected to Archipelago server");
+            Debug.LogError($"[AP Network] Connection failed: {lastError?.Message}");
             _isConnecting = false;
-
-            // Start receiving messages
-            _receiveTask = ReceiveMessagesAsync();
-            return true;
+            return false;
         }
         catch (Exception e)
         {
