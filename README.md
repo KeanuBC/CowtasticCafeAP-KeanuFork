@@ -37,7 +37,7 @@ This project is unofficial and fan-maintained.
 
 ## Requirements
 
-- Target platforms: Windows (may retarget in later builds)
+- Target platforms: Windows, Linux, Mac
 
 ---
 
@@ -48,7 +48,7 @@ This project is unofficial and fan-maintained.
 3. Open your Archipelago installation and click "generate templates" to generate the default yaml.
 4. Move the yaml into /Players and generate
 5. Unzip Cowtastic_Cafe.zip to wherever you'd like it to be.
-6. Click on Cowtastic Cafe.exe. You should be presented with a Unity connection screen.
+6. Click on Cowtastic Cafe.exe (or whatever is accurate for your operating system). You should be presented with a Unity connection screen.
 7. Fill out the port and slot and connect.
 
 ---
