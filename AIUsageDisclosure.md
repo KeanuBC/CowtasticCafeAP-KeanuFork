@@ -1,3 +1,31 @@
+# AI Usage & Development Disclosure
+
+## Original Project
+
+The original Cowtastic Cafe Archipelago implementation was developed with assistance from **Claude AI by Anthropic**. AI assistance was used during the development of the upstream project.
+
+## Keanu Fork
+
+This repository is an independently maintained fork of the original project.
+
+The modifications, changes, and additions I have personally made to this fork were written and implemented by me without AI assistance.
+
+The fact that the original upstream project used AI assistance does not mean that my own contributions were AI-generated.
+
+## Attribution
+
+Credit for the original game, Archipelago implementation, code, assets, and other contributions remains with their respective original creators and rights holders.
+
+This disclosure is intended to distinguish the development history of the original project from the work independently contributed to this fork.
+
+## Transparency
+
+I believe in being transparent about AI involvement in software development. This disclosure is provided so that users and contributors can understand where AI assistance was used and how my own contributions differ from the original project's development.
+
+Below is the Claude Information provided by the Original Upload
+
+--
+
 # Cowtastic Cafe — Archipelago Mod
 
 This repo is the open-source Unity game **Cowtastic Open Café** with an
