@@ -24,8 +24,6 @@ I believe in being transparent about AI involvement in software development. Thi
 
 Below is the Claude Information provided by the Original Upload
 
---
-
 # Cowtastic Cafe — Archipelago Mod
 
 This repo is the open-source Unity game **Cowtastic Open Café** with an
