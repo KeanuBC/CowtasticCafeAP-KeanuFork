@@ -152,6 +152,8 @@ The use of AI in the upstream project's development should not be interpreted as
 
 Credit for original work remains with its respective authors and contributors.
 
+[Read the full AI Usage Disclosure](AIUsageDisclosure.md).
+
 ---
 
 ## Legal Disclaimer
