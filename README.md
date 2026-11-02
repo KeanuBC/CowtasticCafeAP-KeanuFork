@@ -1,82 +1,189 @@
-# AP Cowtastic Open Café
-![Cowtastic Cafe Ingame](https://github.com/Noa3/Cowtastic-Open-Cafe/assets/8495084/c52ea20b-32e8-42b5-a7cb-01c11261cd91)
+# AP Cowtastic Open Café — Keanu Fork
 
-‼️ WARNING: This project includes NSFW content (suggestive themes, audio dialogue).
+An unofficial Archipelago randomizer implementation for Cowtastic Open Café.
+
+This repository contains a modified version of the original AP Cowtastic Open Café project, with additional changes and improvements maintained independently.
+
+> **Content Warning:** This project contains NSFW content, including suggestive themes and audio dialogue. Please keep this in mind before downloading or playing.
 
 ---
 
 ## 📌 Table of Contents
 
-1. [About the Project](#about-the-project)  
-2. [Project Status](#project-status)  
-3. [Requirements](#requirements)  
-4. [Installation](#installation)  
-5. [Voice Assets & Audio Notes](#voice-assets--audio-notes)  
-6. [Contributing](#contributing)  
-7. [Disclaimer & Legal](#disclaimer--legal)  
-8. [Contact](#contact)  
-9. [License Options](#license-options)
+1. [About](#about)
+2. [Project Status](#project-status)
+3. [Requirements](#requirements)
+4. [Installation](#installation)
+5. [Features](#features)
+6. [Voice Assets & Credits](#voice-assets--credits)
+7. [AI Usage & Development Disclaimer](#ai-usage--development-disclaimer)
+8. [Legal Disclaimer](#legal-disclaimer)
+9. [Support & Community](#support--community)
+10. [Acknowledgments](#acknowledgments)
+11. [License](#license)
 
 ---
 
-## About the Project
+## About
 
-AP Cowtastic Café is an Archipelago implementation of the Unity adaptation of the NSFW barista simulation game originally featuring lewd and playful cow-themed content. Mix drinks, upgrade your café, serve strange customers — with suggestive themes, character voices, and audio feedback.
+AP Cowtastic Open Café brings Archipelago multiworld randomization to Cowtastic Open Café, allowing players to experience the café's gameplay alongside other Archipelago players.
 
-This project is unofficial and fan-maintained.
+The randomizer integrates directly with the Unity game, connecting to an Archipelago server to receive items, complete checks, and participate in multiworld progression.
+
+This is an unofficial fork. It is not affiliated with or endorsed by the original game's developers or the Archipelago team.
+
+### What does this fork contain?
+
+- An Archipelago world (`.apworld`) for generating randomized seeds.
+- A modified Unity game client that communicates with Archipelago servers.
+- Item and location randomization.
+- Café upgrades and progression mechanics.
+- Cosmetic unlocks and additional gameplay features.
+- Support for optional Archipelago features such as DeathLink.
 
 ---
 
 ## Project Status
 
-- 🧪 This is an **early, clean reimplementation** of the game, with modular systems and no built-in commercial assets.
-- The game is still **under development** and welcomes community improvements.
-- Open to **pull requests** with meaningful changes.
+This project is independently maintained as a fork of the original AP Cowtastic Open Café implementation.
+
+Development and improvements may continue independently of the original repository.
+
+Contributions, bug reports, and suggestions are welcome, provided they are relevant to this fork.
 
 ---
 
 ## Requirements
 
-- Target platforms: Windows, Linux, Mac
+Before playing, you will need:
+
+- An installation of [Archipelago](https://archipelago.gg/).
+- The Cowtastic Open Café game files included with the release.
+- A compatible operating system (Windows, Linux, or macOS).
+- An Archipelago multiworld seed and its corresponding player YAML.
 
 ---
 
 ## Installation
 
-1. View the current releases. On the most recent release, download the .apworld and .zip.
-2. Double click the apworld to install it into Archipelago.
-3. Open your Archipelago installation and click "generate templates" to generate the default yaml.
-4. Move the yaml into /Players and generate
-5. Unzip Cowtastic_Cafe.zip to wherever you'd like it to be.
-6. Click on Cowtastic Cafe.exe (or whatever is accurate for your operating system). You should be presented with a Unity connection screen.
-7. Fill out the port and slot and connect.
+### 1. Download the files
+
+Visit the repository's [Releases](../../releases/latest) page and download the latest available release.
+
+The release should include:
+- The Archipelago world file (`.apworld`).
+- The game package (`.zip`).
+
+### 2. Install the Archipelago world
+
+1. Locate the downloaded `.apworld` file.
+2. Double-click it to install it into your Archipelago installation.
+3. Open Archipelago and select the option to generate templates.
+
+### 3. Generate your YAML
+
+1. Locate the generated Cowtastic Open Café YAML template.
+2. Configure your desired randomizer settings.
+3. Place the YAML file in your Archipelago `Players` directory.
+4. Generate your multiworld game.
+
+### 4. Launch the game
+
+1. Extract the downloaded game ZIP somewhere convenient.
+2. Open the extracted folder.
+3. Launch `Cowtastic Cafe.exe` (or the equivalent executable for your platform).
+4. You should be greeted with the Archipelago connection screen.
+
+### 5. Connect to your multiworld
+
+Enter the connection information for your Archipelago session:
+
+- **Server:** The address of your Archipelago server.
+- **Port:** The server's connection port.
+- **Slot:** Your player slot name.
+- **Password:** Your server password, if one is required.
+
+Once connected, you can begin playing!
 
 ---
 
-## Voice Assets & Audio Notes
+## Features
 
-- The current voice sample was generously provided by **Lewdheart**.  
-  All rights to this specific voice belong to the original creator.
+The randomizer includes several mechanics and optional settings.
 
----
+- **Ingredient Progression:** Unlock ingredients through randomized item collection.
+- **Serve Checks:** Earn location checks by fulfilling customer orders.
+- **Shop Locations:** Purchase randomized upgrades using in-game currency.
+- **Cosmetics:** Receive cosmetic unlocks through the item pool.
+- **Stretchy Candy:** Increase milk capacity and work toward the game's victory condition.
+- **DeathLink:** Optionally interact with other players through Archipelago's DeathLink system.
+- **Censorship Mode:** Provides alternate names for certain items and locations.
+- **Milk Flow Adjustments:** An optional setting for controlling milk production rate.
 
-## Disclaimer & Legal
-
-- This is **not a commercial release** and is shared only for educational and personal modification purposes.
-- **Selling this project or distributing it commercially is not allowed** unless otherwise stated by all asset authors.
-- NSFW themes are used, but no real individuals are involved.
-- The project includes **fan-made code only**, without bundled copyrighted,
-  proprietary, or paid assets.
-
-> ⚠️ Important: If you want to prevent commercial use, you **cannot use GPLv3** — because it explicitly allows resale. See below for licensing options.
+Some features are configurable through the player's YAML settings.
 
 ---
 
-## Contact
+## Voice Assets & Credits
 
-Support can be found at the AP After Dark Discord server, in the Cowtastic Cafe channel.
+The project uses voice content originally provided by its respective creators.
 
-Base Open Cowtastic Cafe is available thanks to noa3@gmx.net
+The voice sample included in the original project was generously provided by **Lewdheart**. All rights to that specific voice recording remain with its original creator.
+
+Additional acknowledgments:
+
+- **Noa3** — Original Cowtastic Open Café project and source material.
+- **Original AP Cowtastic Café contributors** — Development of the original Archipelago implementation.
+- **Archipelago** — Multiworld randomizer framework.
+
+Please respect the rights of the original creators when redistributing or modifying their work.
+
+---
+
+## AI Usage & Development Disclaimer
+
+Transparency regarding AI usage is important to this project.
+
+The original upstream project used **Claude AI (Anthropic)** during its development.
+
+However, the modifications and changes I have personally made to this fork were written and implemented by me without AI assistance.
+
+The use of AI in the upstream project's development should not be interpreted as meaning that all work in this repository was AI-generated.
+
+Credit for original work remains with its respective authors and contributors.
+
+---
+
+## Legal Disclaimer
+
+This is an unofficial, non-commercial community project.
+
+- This project is not affiliated with the original game's developers or Archipelago.
+- Original game content, voice recordings, and other third-party materials remain the property of their respective owners.
+- Please do not redistribute third-party content outside the permissions granted by its respective creator.
+- This fork does not claim ownership of the original project or its assets.
+
+### Licensing
+
+The original repository includes an MIT license for its licensed software.
+
+Please refer to the included `LICENSE.txt` for the applicable license terms. Third-party assets, voice recordings, and other materials may have separate licensing requirements.
+
+---
+
+## Support & Community
+
+For help with Archipelago-related questions, multiworld setup, or gameplay issues, you can visit the AP After Dark Discord server and look for the Cowtastic Café community.
+
+Bug reports and suggestions specific to this fork should be submitted through this repository's [Issues](../../issues) page.
+
+---
+
+## Acknowledgments
+
+Special thanks to everyone involved in the original Cowtastic Open Café project, the original Archipelago implementation, and the Archipelago community.
+
+This fork would not exist without their previous work.
 
 ---
 
