@@ -302,7 +302,7 @@ public class ArchipelagoClient : MonoBehaviour
         string sn = slotName.Replace("\"", "\\\"");
         string uuid   = Guid.NewGuid().ToString();
         string packet =
-            $"[{{\"cmd\":\"Connect\",\"game\":\"Cowtastic Cafe\"," +
+            $"[{{\"cmd\":\"Connect\",\"game\":\"Cowtastic Cafe Keanu Fork\"," +
             $"\"name\":\"{sn}\",\"password\":\"{pw}\"," +
             $"\"uuid\":\"{uuid}\"," +
             $"\"version\":{{\"major\":0,\"minor\":5,\"build\":0,\"class\":\"Version\"}}," +
