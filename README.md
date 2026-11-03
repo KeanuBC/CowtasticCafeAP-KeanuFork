@@ -91,7 +91,7 @@ The release should include:
 
 1. Extract the downloaded game ZIP somewhere convenient.
 2. Open the extracted folder.
-3. Launch `Cowtastic Cafe.exe` (or the equivalent executable for your platform).
+3. Launch `CowtasticCafeKeanuFork.exe` (or the equivalent executable for your platform).
 4. You should be greeted with the Archipelago connection screen.
 
 ### 5. Connect to your multiworld
